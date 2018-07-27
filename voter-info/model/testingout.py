@@ -34,7 +34,8 @@ dummy2 = []
 #     political_party = politician['party']
 #     dummy2.append()
 
-
+print("YOUR OFFICIALS")
+print("######################################")
 for i in range(len(politician_info)):
     title = office_dict[i]
     name = politician_info[i]['name']
@@ -42,14 +43,27 @@ for i in range(len(politician_info)):
 
 [print(dum) for dum in dummy2]
 
-fill_senate_request = requests.get(HOUSE_URL, headers={'X-API-Key': PROPUBLICA_KEY})
+print()
+print()
+print()
+print("SENATORS")
+print("######################################")
+fill_senate_request = requests.get(SENATE_URL, headers={'X-API-Key': PROPUBLICA_KEY})
 senate_json = fill_senate_request.json()
 senate_members = senate_json["results"][0]['members']
 
 [print((senator['first_name'] + " " + senator['last_name'] + " " + senator['party'])) for senator in senate_members]
 
+print()
+print()
+print()
+print("REPRESENTATIVES")
+print("######################################")
+fill_house_request = requests.get(HOUSE_URL, headers={'X-API-Key': PROPUBLICA_KEY})
+house_json = fill_house_request.json()
+house_members = house_json
 
-
+[print((member['first_name'] + " " + member['last_name'] + " " + member['party'])) for member in senate_members]
 
 
 
