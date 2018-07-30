@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <title>Voter Information Project</title>
+    <link rel="stylesheet" href="/static/styles.css"/>
+</head>
+
+<body>
+<ul id="flash-message"> {% for message in get_flashed_messages() %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+<h1>Voter Information Project</h1>
+
+<div id="nav"><center>
+    <a href="/congresspeople">Congresspeople | </a>
+    <a href="/categories">Bill Categories | </a>
+    {% if session.get('user_id') %}
+    <a href="/profile">Profile | </a>
+    <a href="/logout">Log Out</a>
+    {% else %}
+    <a href="/login">Log In |</a>
+    <a href="/register">Register</a>
+    {% endif %}
+</center></div>
+<hr>
+
+{% block content %} put your content here {% endblock %}
+
+</body>
+</html>
