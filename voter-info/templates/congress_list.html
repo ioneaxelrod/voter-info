@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Senate</h2>
+{% for senator in senators %}
+    <h3>{{ senator.title }} {{ senator.name }} {{ senator.party }}</h3>
+    <strong><p>Next Election in {{ senator.get_election_year() }}</p></strong>
+    <strong><p>Contact Info</p></strong>
+    <ul>
+        <li>Phone Number: {{ senator.phone }}</li>
+        <li>Facebook: {{ senator.facebook }}</li>
+        <li>Twitter: {{ senator.twitter }}</li>
+        <li>YouTube: {{ senator.youtube }}</li>
+    </ul>
+{% endfor %}
+
+<br><br><hr><br>
+
+<h2>House</h2>
+{% for rep in representatives %}
+    <h3>{{ rep.title }} {{ rep.name }} {{ rep.party }}</h3>
+    <strong><p>Next Election in {{ rep.get_election_year() }}</p></strong>
+    <strong><p>Contact Info</p></strong>
+    <ul>
+        <li>Phone Number: {{ rep.phone }}</li>
+        <li>Facebook: {{ rep.facebook }}</li>
+        <li>Twitter: {{ rep.twitter }}</li>
+        <li>YouTube: {{ rep.youtube }}</li>
+    </ul>
+{% endfor %}
+
+{% endblock %}

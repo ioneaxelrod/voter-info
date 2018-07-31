@@ -1,15 +1,17 @@
-from flask_sqlalchemy import SQLAlchemy
-from os import environ
 from datetime import datetime
-from controller.server import app
+from os import environ
 
 import requests
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 HOUSE_URL = "https://api.propublica.org/congress/v1/115/house/members.json"
 SENATE_URL = "https://api.propublica.org/congress/v1/115/senate/members.json"
 PROPUBLICA_KEY = environ['PROPUBLICA_CONGRESS_KEY']
 
+
+########################################################################################################################
+# Congressperson definition
 
 class Congressperson(db.Model):
     """"""
@@ -26,6 +28,21 @@ class Congressperson(db.Model):
     facebook = db.Column(db.String(64))
     youtube = db.Column(db.String(64))
 
+    def get_election_year(self):
+        return self.next_election.year
+
+
+
+    @classmethod
+    def get_senators(cls):
+        senators = cls.query.filter(cls.title.like("Senator%")).all()
+        return senators
+
+    @classmethod
+    def get_representatives(cls):
+        representatives = cls.query.filter(cls.title == "Representative").all()
+        return representatives
+
 
 ########################################################################################################################
 # Helper Functions
@@ -37,15 +54,15 @@ def load_congresspeople_into_db():
     # load senators
     fill_senate_request = requests.get(SENATE_URL, headers={'X-API-Key': PROPUBLICA_KEY})
     senate_json = fill_senate_request.json()
-    parse_member_from_json(senate_json)
+    parse_members_from_json(senate_json)
 
     # load representatives
     fill_house_request = requests.get(HOUSE_URL, headers={'X-API-Key': PROPUBLICA_KEY})
     house_json = fill_house_request.json()
-    parse_member_from_json(house_json)
+    parse_members_from_json(house_json)
 
 
-def parse_member_from_json(json):
+def parse_members_from_json(json):
     """"""
 
     members = json["results"][0]['members']
@@ -91,6 +108,8 @@ def parse_year(year):
     return datetime.strptime(year, '%Y')
 
 
+
+
 ########################################################################################################################
 # Main Functions
 
@@ -107,6 +126,8 @@ def connect_to_db(app):
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
+
+    from server import app
 
     connect_to_db(app)
     db.create_all()

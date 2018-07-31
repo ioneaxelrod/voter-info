@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Your Profile</h1>
+<h2>Your federal congresspeople</h2>
+
+    {% for found in user.find_representatives() %}
+    <h3>{{ found.title }} {{ found.name }} {{ found.party }}</h3>
+    <strong><p>Next Election in {{ found.get_election_year() }}</p></strong>
+    <strong><p>Contact Info</p></strong>
+    <ul>
+        <li>Phone Number: {{ found.phone }}</li>
+        <li>Facebook: {{ found.facebook }}</li>
+        <li>Twitter: {{ found.twitter }}</li>
+        <li>YouTube: {{ found.youtube }}</li>
+    </ul>
+    {% endfor %}
+{% endblock %}

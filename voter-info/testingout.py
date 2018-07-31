@@ -52,7 +52,8 @@ fill_senate_request = requests.get(SENATE_URL, headers={'X-API-Key': PROPUBLICA_
 senate_json = fill_senate_request.json()
 senate_members = senate_json["results"][0]['members']
 
-[print((senator['first_name'] + " " + senator['last_name'] + " " + senator['party'])) for senator in senate_members]
+[print((senator['title'] + " " + senator['first_name'] + " " + senator['last_name'] + " " + senator['party']))
+ for senator in senate_members]
 
 print()
 print()
@@ -61,9 +62,10 @@ print("REPRESENTATIVES")
 print("######################################")
 fill_house_request = requests.get(HOUSE_URL, headers={'X-API-Key': PROPUBLICA_KEY})
 house_json = fill_house_request.json()
-house_members = house_json
+house_members = house_json["results"][0]['members']
 
-[print((member['first_name'] + " " + member['last_name'] + " " + member['party'])) for member in senate_members]
+[print((member['title'] + " " + member['first_name'] + " " + member['last_name'] + " " + member['party']))
+ for member in house_members]
 
 
 

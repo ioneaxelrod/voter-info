@@ -1,10 +1,15 @@
-from jinja2 import StrictUndefined
+from os import environ
 
 from flask import (Flask, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
+from jinja2 import StrictUndefined
 from sqlalchemy.orm.exc import NoResultFound
-from os import environ
+
+
+from model.congressperson import Congressperson
+from model.user import User
 
 app = Flask(__name__)
 db = SQLAlchemy()
@@ -18,7 +23,7 @@ app.secret_key = environ['FLASK_SECRET_KEY']
 app.jinja_env.undefined = StrictUndefined
 
 
-##############################################################################
+########################################################################################################################
 # Home Page
 
 
@@ -29,12 +34,11 @@ def index():
     return render_template("index.html")
 
 
-##############################################################################
+########################################################################################################################
 # User Pages
 
-
 @app.route('/profile')
-def user_list():
+def user_profile():
     """Show user information"""
 
     user_id = session["user_id"]
@@ -42,13 +46,20 @@ def user_list():
     return render_template("user_profile.html", user=user)
 
 
-##############################################################################
+########################################################################################################################
 # Congress Pages
 
+@app.route('/congresspeople')
+def show_congress():
+    """Creates a page of current congress divided by senators and representatives"""
+    representatives = Congressperson.get_representatives()
+
+    senators = Congressperson.get_senators()
+
+    return render_template("congress_list.html", representatives=representatives, senators=senators)
 
 
-
-##############################################################################
+########################################################################################################################
 # Registration and Login Pages
 
 
@@ -63,20 +74,22 @@ def register_form():
 def register_process():
     """Processes registration. Checks if user exists, if not adds to db """
 
+    username=request.form.get("username")
     email = request.form.get("email")
     password = request.form.get("password")
+    address = request.form.get("address")
 
-    # # Check to see if user exists before registering a new user
-    # if (User.query.filter(User.email == email).all()):
-    #     flash("A user with that email already exists!")
-    #
-    # else:
-    #     # Make a new user
-    #     new_user = User(email=email, password=password)
-    #     db.session.add(new_user)
-    #     db.session.commit()
-    #
-    #     flash("You have successfully registered!")
+    # Check to see if user exists before registering a new user
+    if User.query.filter(or_(User.email == email, User.screen_name == username)).all():
+        flash("A user with that email already exists!")
+
+    else:
+        # Make a new user
+        new_user = User(screen_name=username, email=email, address=address, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("You have successfully registered!")
 
     return redirect('/')
 
@@ -93,12 +106,12 @@ def login_process():
     """Process login request"""
 
     # Obtain form information
-    email = request.form.get("email")
+    username = request.form.get("username")
     password = request.form.get("password")
 
     # Make sure user actually exists
     try:
-        user = User.query.filter(User.email == email).one()
+        user = User.query.filter(User.screen_name == username).one()
     except NoResultFound:
         flash("Email not registered!")
         return redirect('/')
@@ -107,7 +120,7 @@ def login_process():
     if user.password == password:
         session['user_id'] = user.user_id
         flash("User logged in!")
-        return redirect('/users/' + str(user.user_id))
+        return redirect('/profile')
     else:
         flash("Incorrect password!")
         return redirect('/')
@@ -123,7 +136,7 @@ def logout():
     return redirect('/')
 
 
-##############################################################################
+########################################################################################################################
 # Main Function
 
 def connect_to_db(app):
