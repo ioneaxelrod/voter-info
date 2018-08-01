@@ -13,9 +13,19 @@ class Category(db.Model):
     __tablename__ = "categories"
 
     category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(64), unique=True, nullable=False)
+    name = db.Column(db.String(128), unique=True, nullable=False)
 
+########################################################################################################################
+# Helper Functions
 
+def load_categories_into_db():
+    with open("subjects.txt") as file:
+        categories = []
+        for line in file:
+            categories.append(Category(name=line))
+
+        db.session.add_all(categories)
+        db.session.commit()
 
 ########################################################################################################################
 # Main Functions
@@ -40,4 +50,5 @@ if __name__ == "__main__":
 
     connect_to_db(app)
     db.create_all()
+    load_categories_into_db()
     print("Connected to DB.")

@@ -77,8 +77,7 @@ if __name__ == "__main__":
 
     connect_to_db(app)
     db.create_all()
-    sexual_health = Category(name="sexual-health")
-    db.session.add(sexual_health)
-    db.session.commit()
-    Bill.retrieve_bills_by_category(sexual_health)
+    # dummy_category = Category.query.get(1)
+    #
+    # Bill.retrieve_bills_by_category(dummy_category)
     print("Connected to DB.")
