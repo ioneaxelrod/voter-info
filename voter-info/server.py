@@ -3,13 +3,11 @@ from os import environ
 from flask import (Flask, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
 from jinja2 import StrictUndefined
+from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
+from model import Bill, Congressperson, User, Category
 
-
-from model.congressperson import Congressperson
-from model.user import User
 
 app = Flask(__name__)
 db = SQLAlchemy()
@@ -58,6 +56,15 @@ def show_congress():
 
     return render_template("congress_list.html", representatives=representatives, senators=senators)
 
+########################################################################################################################
+# Category Pages
+
+
+@app.route('/categories')
+def show_categories():
+    """"""
+    categories = Category.query.all()
+    return render_template("categories.html", categories=categories)
 
 ########################################################################################################################
 # Registration and Login Pages
@@ -74,7 +81,7 @@ def register_form():
 def register_process():
     """Processes registration. Checks if user exists, if not adds to db """
 
-    username=request.form.get("username")
+    username = request.form.get("username")
     email = request.form.get("email")
     password = request.form.get("password")
     address = request.form.get("address")
