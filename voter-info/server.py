@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from jinja2 import StrictUndefined
 from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
-from model import Bill, Congressperson, User, Category
+from model import Bill, Congressperson, User, Category, UserCategory, BillCategory
 
 
 app = Flask(__name__)
@@ -65,6 +65,22 @@ def show_categories():
     """"""
     categories = Category.query.all()
     return render_template("categories.html", categories=categories)
+
+
+@app.route('/add-categories', methods=['POST'])
+def add_user_categories():
+    if session.get('user_id'):
+        categories = request.form.getlist("categories")
+        user_categories = [UserCategory(user_id=session['user_id'], category_id=category_id)
+                           for category_id in categories]
+        db.session.add_all(user_categories)
+        db.session.commit()
+        flash("You have added categories to your profile")
+        return redirect('/')
+    else:
+        flash("You are not logged in and do not have access to this page")
+        return redirect('/')
+
 
 ########################################################################################################################
 # Registration and Login Pages

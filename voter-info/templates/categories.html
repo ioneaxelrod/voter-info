@@ -2,7 +2,18 @@
 {% block content %}
 
 <h2>Bill Categories</h2>
-    {% for category in categories %}
-        <p><a href="/{{ category.name }}">{{ category.name }}</a></p>
-    {% endfor %}
+    {% if session["user_id"] is defined %}
+        <form action="/add-categories" method="POST">
+        {% for category in categories %}
+            <p><a href="/{{ category.name }}">{{ category.name }}</a>
+            <input type="checkbox" id="{{category.category_id}}" name="categories" value="{{category.category_id}}"></p>
+        {% endfor %}
+         <input type ="submit" name="submit" value="Add Categories">
+         </form>
+    {% else %}
+        {% for category in categories %}
+            <p><a href="/{{ category.name }}">{{ category.name }}</a>
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}

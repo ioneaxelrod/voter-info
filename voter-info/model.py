@@ -250,8 +250,6 @@ def parse_bills_from_json(json, category):
         bill_uri = bill['bill_uri']
         summary = bill['summary']
 
-        # bill = Bill(bill_id, bill_title, bill_uri, summary, category_id)
-
         bill = Bill(bill_id=bill_id,
                     bill_title=bill_title,
                     bill_uri=bill_uri,
@@ -267,18 +265,18 @@ def parse_bills_from_json(json, category):
 
 ########################################################################################################################
 # UserCategory definition
-#
-# class UserCategory(db.Model):
-#     """"""
-#
-#     __tablename__ = "user_categories"
-#
-#     user_category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'))
-#     user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
-#
-#     category = db.relationship("Category", backref="categories")
-#     user = db.relationship("User", backref="users")
+
+class UserCategory(db.Model):
+    """"""
+
+    __tablename__ = "user_categories"
+
+    user_category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    category_id = db.Column(db.Integer, db.ForeignKey(Category.category_id))
+    user_id = db.Column(db.Integer, db.ForeignKey(User.user_id))
+
+    category = db.relationship("Category", backref="user_categories")
+    user = db.relationship("User", backref="user_categories")
 
 
 ########################################################################################################################
@@ -290,11 +288,13 @@ class BillCategory(db.Model):
     __tablename__ = "bill_categories"
 
     bill_category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'))
-    bill_id = db.Column(db.String, db.ForeignKey('bills.bill_id'))
+    category_id = db.Column(db.Integer)
 
-    category = db.relationship("Category", backref="categories")
-    bill = db.relationship("Bill", backref="bills")
+    category_id = db.Column(db.Integer, db.ForeignKey(Category.category_id))
+    bill_id = db.Column(db.String, db.ForeignKey(Bill.bill_id))
+
+    category = db.relationship("Category", backref="bill_categories")
+    bill = db.relationship("Bill", backref="bill_categories")
 
 
 ########################################################################################################################
