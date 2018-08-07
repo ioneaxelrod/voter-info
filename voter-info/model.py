@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy.orm.exc import NoResultFound
 import requests
 
+
 HOUSE_URL = "https://api.propublica.org/congress/v1/115/house/members.json"
 SENATE_URL = "https://api.propublica.org/congress/v1/115/senate/members.json"
 BILL_BY_CATEGORY_URL= "https://api.propublica.org/congress/v1/bills/subjects/{subject}.json"
@@ -34,32 +35,41 @@ class User(db.Model):
 
 
     def find_representatives(self):
-        """"""
-        # with app.app_context():
+        """Finds the politicians that represent the user based on user's address"""
 
+        # Retrieves json from google api to get json of local politicians
         search_address = "&address=" + self.address
         request = requests.get(REPRESENTATIVE_URL + CIVIC_KEY + search_address)
         politician_json = request.json()
 
         politician_info = politician_json['officials']
 
+        # something
         congresspeople = []
+
         for politician in politician_info:
+
             name_parts = politician['name'].split(" ")
             for part in name_parts:
                 if '.' in part:
                     name_parts.remove(part)
             name = " ".join(name_parts)
-            print(name)
             congressperson = Congressperson.query.filter_by(name=name).first()
+
             if congressperson:
                 congresspeople.append(congressperson)
         return congresspeople
 
     def add_user_categories(self, categories):
+        """"""
+
         added_categories = []
+
         for category in categories:
-            added_categories.append(UserCategory(user_id=self.user_id, category_id=category.category_id))
+            if not UserCategory.query.filter(UserCategory.user_id == self.user_id,
+                                             UserCategory.category_id == category.category_id).first():
+                added_categories.append(UserCategory(user_id=self.user_id, category_id=category.category_id))
+
         db.session.add_all(added_categories)
         db.session.commit()
 
@@ -211,12 +221,12 @@ class Bill(db.Model):
                         unique=True,
                         nullable=False,
                         primary_key=True)
-    bill_title = db.Column(db.String, nullable=False)
+    bill_title = db.Column(db.String)
     bill_uri = db.Column(db.String, unique=True, nullable=False)
     summary = db.Column(db.String)
 
     @classmethod
-    def retrieve_bills_by_category(cls, category):
+    def parse_bills_by_category(cls, category):
         """"""
 
         subject = format_category_name(category)
@@ -228,6 +238,9 @@ class Bill(db.Model):
 
         parse_bills_from_json(bill_json, category)
 
+    @classmethod
+    def get_bills_by_category(cls, category):
+        return Bill.query.join(BillCategory).filter_by(category_id=category.category_id).all()
 
 # Helper Functions
 
@@ -237,31 +250,39 @@ def format_category_name(category):
     category_words = category.name.rstrip().replace(',', '').split(" ")
     return "-".join(category_words)
 
+
 def parse_bills_from_json(json, category):
     """"""
-    if json.get('error'):
+    if json.get('error') or json.get('errors') or json.get('status') == "ERROR":
         print("No results found")
         return
-    bills = json["results"]
+
+    bills = json['results']
 
     for bill in bills:
+
         bill_id = bill['bill_id']
-        bill_title = bill['short_title']
-        bill_uri = bill['bill_uri']
-        summary = bill['summary']
 
-        bill = Bill(bill_id=bill_id,
-                    bill_title=bill_title,
-                    bill_uri=bill_uri,
-                    summary=summary,
-                    )
-        bill_category = BillCategory(bill_id=bill_id, category_id=category.category_id)
-        db.session.add(bill_category)
-        db.session.add(bill)
+        if Bill.query.filter_by(bill_id=bill_id).first():
+            bill_category = BillCategory(bill_id=bill_id, category_id=category.category_id)
+            db.session.add(bill_category)
 
+        else:
+            bill_title = bill['short_title']
+            bill_uri = bill['congressdotgov_url']
+            summary = bill['summary']
 
+            bill = Bill(bill_id=bill_id,
+                        bill_title=bill_title,
+                        bill_uri=bill_uri,
+                        summary=summary,
+                        )
+            bill_category = BillCategory(bill_id=bill_id, category_id=category.category_id)
+            db.session.add(bill_category)
+            db.session.add(bill)
 
     db.session.commit()
+
 
 ########################################################################################################################
 # UserCategory definition
@@ -349,9 +370,19 @@ if __name__ == "__main__":
     print("\n\n\n=============================================")
 
     # Import Bills
-    Bill.retrieve_bills_by_category(Category.query.get(31))
-    bills = Bill.query.all()
-    [print(bill) for bill in bills]
+    for category in categories:
+        try:
+            Bill.parse_bills_by_category(category)
+        except ValueError:
+            print('Decoding JSON has failed')
+
+    # Bill.parse_bills_by_category(Category.query.get(31))
+    # Bill.parse_bills_by_category(Category.query.get(50))
+    # Bill.parse_bills_by_category(Category.query.get(1))
+    #
+    # bills = Bill.query.all()
+    # [print(bill) for bill in bills]
+    # [print(bill_category) for bill_category in BillCategory.query.all()]
     print("\n\n\n=============================================")
 
 

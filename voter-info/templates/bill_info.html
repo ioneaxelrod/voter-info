@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>{{ bill.bill_title }}</h2>
+    <p>Bill Id: {{ bill.bill_id }}</p>
+    <p>URI: <a href="{{ bill.bill_uri }}">{{ bill.bill_uri }}</a></p>
+    <p>Summary: {{ bill.summary }}</p>
+
+
+{% endblock %}
+

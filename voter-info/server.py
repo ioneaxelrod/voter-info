@@ -82,6 +82,49 @@ def add_user_categories():
         return redirect('/')
 
 
+@app.route('/user-categories')
+def show_user_categories():
+    """"""
+    if session.get('user_id'):
+        user = User.query.get(session['user_id'])
+        categories = Category.query.join(UserCategory).filter_by(user_id=user.user_id).all()
+        return render_template("user_categories.html", categories=categories)
+
+    else:
+        flash("You are not logged in and do not have access to this page")
+        return redirect('/')
+
+
+
+########################################################################################################################
+# Bill Pages
+
+
+@app.route('/categories/<category_id>')
+def show_bills_by_category(category_id):
+    """"""
+    category = Category.query.filter_by(category_id=category_id).first()
+    bills = Bill.get_bills_by_category(category)
+    [print(bill) for bill in bills]
+    return render_template("bills_by_category.html", category=category, bills=bills)
+
+
+@app.route('/bills/<bill_id>')
+def show_bill_info(bill_id):
+    """"""
+    if session.get('user_id'):
+        user = User.query.get(session['user_id'])
+    else:
+        user = None
+
+    print()
+
+    bill = Bill.query.get(bill_id)
+
+    return render_template("bill_info.html", bill=bill, user=user)
+
+
+
 ########################################################################################################################
 # Registration and Login Pages
 

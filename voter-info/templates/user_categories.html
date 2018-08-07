@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Your Watched Categories</h2>
+
+    {% for category in categories %}
+    <p><a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
+
+    </p>
+    {% endfor %}
+
+{% endblock %}
