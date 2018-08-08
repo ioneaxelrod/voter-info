@@ -10,6 +10,7 @@ SENATE_URL = "https://api.propublica.org/congress/v1/115/senate/members.json"
 BILL_BY_CATEGORY_URL= "https://api.propublica.org/congress/v1/bills/subjects/{subject}.json"
 REPRESENTATIVE_URL = "https://www.googleapis.com/civicinfo/v2/representatives?key="
 ROLL_CALL_URL = "https://api.propublica.org/congress/v1/115/bills/{bill-id}.json"
+VOTE_URL = "https://api.propublica.org/congress/v1/115/{chamber}/sessions/{session-number}/votes/{roll-call-number}.json"
 
 
 
@@ -149,8 +150,49 @@ class Congressperson(db.Model):
         representatives = cls.query.filter(cls.title == "Representative").all()
         return representatives
 
+    def get_vote_from_roll_call(self, bill):
+        if "Representative" in self.title:
+            if bill.house_votes_url:
+                vote_url = bill.house_votes_url
+            else:
+                return "No vote information found"
+        elif "Senator" in self.title:
+            if bill.senate_votes_url:
+                vote_url = bill.senate_votes_url
+            else:
+                return "No vote information found"
+
+        vote_request = requests.get(vote_url, headers={'X-API-Key': PROPUBLICA_KEY})
+        vote_json = vote_request.json()
+        return parse_vote_from_json(vote_json, self)
+
+
+
+
 
 # Helper Functions
+
+def parse_vote_from_json(json, congressperson):
+    """"""
+    if json.get('error') or json.get('errors') or json.get('status') == "ERROR":
+        print("No results found")
+        return
+
+    vote_positions = json['results']['votes']['vote']['positions']
+    print()
+    print()
+    print()
+    print("======================================")
+
+    for position in vote_positions:
+        if position['member_id'] == congressperson.congress_id:
+            vote = position['vote_position']
+            print(vote)
+            return vote
+
+    return "No vote information found"
+
+
 
 def load_congresspeople_into_db():
     """"""
@@ -230,6 +272,8 @@ class Bill(db.Model):
     summary = db.Column(db.String)
     house_roll_call = None
     senate_roll_call = None
+    house_votes_url = None
+    senate_votes_url = None
 
 
     @classmethod
@@ -276,11 +320,14 @@ class Bill(db.Model):
         for result in json_results:
             if result['chamber'] == 'House':
                 self.house_roll_call = result['roll_call']
+                self.house_votes_url = result['api_url']
                 break
 
         for result in json_results:
             if result['chamber'] == 'Senate':
                 self.senate_roll_call = result['roll_call']
+                self.senate_votes_url = result['api_url']
+
                 break
 
 
