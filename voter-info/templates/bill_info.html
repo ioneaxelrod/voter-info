@@ -5,6 +5,14 @@
     <p>Bill Id: {{ bill.bill_id }}</p>
     <p>URI: <a href="{{ bill.bill_uri }}">{{ bill.bill_uri }}</a></p>
     <p>Summary: {{ bill.summary }}</p>
+    <p>Summary: {{ bill.summary }}</p>
+    {% if bill.senate_roll_call %}
+    <p>Senate Roll Call: {{ bill.senate_roll_call }}</p>
+    {% endif %}
+    {% if bill.house_roll_call %}
+    <p>House Roll Call: {{ bill.house_roll_call }}</p>
+    {% endif %}
+
 
 
 {% endblock %}

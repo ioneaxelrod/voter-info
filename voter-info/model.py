@@ -9,6 +9,9 @@ HOUSE_URL = "https://api.propublica.org/congress/v1/115/house/members.json"
 SENATE_URL = "https://api.propublica.org/congress/v1/115/senate/members.json"
 BILL_BY_CATEGORY_URL= "https://api.propublica.org/congress/v1/bills/subjects/{subject}.json"
 REPRESENTATIVE_URL = "https://www.googleapis.com/civicinfo/v2/representatives?key="
+ROLL_CALL_URL = "https://api.propublica.org/congress/v1/115/bills/{bill-id}.json"
+
+
 
 PROPUBLICA_KEY = environ['PROPUBLICA_CONGRESS_KEY']
 CIVIC_KEY = environ['GOOGLE_CIVIC_KEY']
@@ -130,6 +133,7 @@ class Congressperson(db.Model):
     facebook = db.Column(db.String(64))
     youtube = db.Column(db.String(64))
 
+
     def get_election_year(self):
         return self.next_election.year
 
@@ -224,6 +228,9 @@ class Bill(db.Model):
     bill_title = db.Column(db.String)
     bill_uri = db.Column(db.String, unique=True, nullable=False)
     summary = db.Column(db.String)
+    house_roll_call = None
+    senate_roll_call = None
+
 
     @classmethod
     def parse_bills_by_category(cls, category):
@@ -240,7 +247,47 @@ class Bill(db.Model):
 
     @classmethod
     def get_bills_by_category(cls, category):
+        """"""
+
         return Bill.query.join(BillCategory).filter_by(category_id=category.category_id).all()
+
+    def set_roll_call_info(self):
+        """"""
+        bill_slug = get_bill_slug(self.bill_id)
+        search_url = ROLL_CALL_URL.replace("{bill-id}", bill_slug)
+        print(search_url)
+
+        fill_bill_request = requests.get(search_url, headers={'X-API-Key': PROPUBLICA_KEY})
+        print(fill_bill_request.text)
+
+        bill_json = fill_bill_request.json()
+
+        if bill_json.get('error') or bill_json.get('errors') or bill_json.get('status') == "ERROR":
+            print("No results found")
+
+        else:
+            results = bill_json['results'][0]['votes']
+            if results:
+                self.parse_roll_call_info(results)
+
+
+    def parse_roll_call_info(self, json_results):
+        """"""
+        for result in json_results:
+            if result['chamber'] == 'House':
+                self.house_roll_call = result['roll_call']
+                break
+
+        for result in json_results:
+            if result['chamber'] == 'Senate':
+                self.senate_roll_call = result['roll_call']
+                break
+
+
+
+
+
+
 
 # Helper Functions
 
@@ -283,6 +330,9 @@ def parse_bills_from_json(json, category):
 
     db.session.commit()
 
+def get_bill_slug(bill_id):
+    return bill_id.split("-")[0]
+
 
 ########################################################################################################################
 # UserCategory definition
@@ -316,6 +366,23 @@ class BillCategory(db.Model):
 
     category = db.relationship("Category", backref="bill_categories")
     bill = db.relationship("Bill", backref="bill_categories")
+
+
+########################################################################################################################
+# Vote definition
+#
+# class Vote(db.Model):
+#     """"""
+#
+#     __tablename__ = "votes"
+#
+#     vote_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     vote_position = db.Column(db.String, nullable=False)
+#     congress_id = db.Column(db.String, db.ForeignKey(Congressperson.congress_id))
+#     bill_id = db.Column(db.String, db.ForeignKey(Bill.bill_id))
+#
+#     category = db.relationship("Category", backref="bill_categories")
+#     bill = db.relationship("Bill", backref="bill_categories")
 
 
 ########################################################################################################################

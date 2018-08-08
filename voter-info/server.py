@@ -2,15 +2,13 @@ from os import environ
 
 from flask import (Flask, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
-from flask_sqlalchemy import SQLAlchemy
 from jinja2 import StrictUndefined
 from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
-from model import Bill, Congressperson, User, Category, UserCategory, BillCategory
+from model import Bill, Congressperson, User, Category, UserCategory, db
 
 
 app = Flask(__name__)
-db = SQLAlchemy()
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = environ['FLASK_SECRET_KEY']
@@ -94,6 +92,29 @@ def show_user_categories():
         flash("You are not logged in and do not have access to this page")
         return redirect('/')
 
+@app.route('/remove-categories', methods=['POST'])
+def remove_user_categories():
+    if session.get('user_id'):
+        user_id = session['user_id']
+        category_ids = request.form.get('categories')
+
+        user_categories = []
+
+        for category_id in category_ids:
+            user_category = UserCategory.query.filter_by(user_id=user_id, category_id=category_id).first()
+            user_categories.append(user_category)
+            db.session.delete(user_category)
+            db.session.commit()
+
+        flash("Successfully removed categories")
+
+        categories = Category.query.join(UserCategory).filter_by(user_id=user_id).all()
+        return render_template("user_categories.html", categories=categories)
+
+    else:
+        flash("You are not logged in and do not have access to this page")
+        return redirect('/')
+
 
 
 ########################################################################################################################
@@ -120,7 +141,7 @@ def show_bill_info(bill_id):
     print()
 
     bill = Bill.query.get(bill_id)
-
+    bill.set_roll_call_info()
     return render_template("bill_info.html", bill=bill, user=user)
 
 
