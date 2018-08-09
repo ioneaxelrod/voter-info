@@ -1,22 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>{{ bill.bill_title }}</h2>
-    <p>Bill Id: {{ bill.bill_id }}</p>
-    <p>URI: <a href="{{ bill.bill_uri }}">{{ bill.bill_uri }}</a></p>
+<h1><a href="{{ bill.bill_uri }}">{{ bill.bill_title }}</a></h1>
+    <p><strong>Bill Id:</strong> {{ bill.bill_id }}</p>
+    <!--<p>URI: <a href="{{ bill.bill_uri }}">{{ bill.bill_uri }}</a></p>-->
+
     {% if bill.senate_roll_call %}
-        <p>Senate Roll Call: {{ bill.senate_roll_call }}</p>
+        <p><strong>Senate Roll Call:</strong> {{ bill.senate_roll_call }}</p>
     {% endif %}
+
     {% if bill.house_roll_call %}
-        <p>House Roll Call: {{ bill.house_roll_call }}</p>
+        <p><strong>House Roll Call:</strong> {{ bill.house_roll_call }}</p>
     {% endif %}
-    <p>Summary: {{ bill.summary }}</p>
+
+    <p><strong>Summary:</strong> {{ bill.summary }}</p>
+
     {% if user %}
         <h2>Your Members of Congress Voted...</h2>
         {% for member in user.find_representatives() %}
-            <p>Title: {{ member.title }}</p>
-            <p>Name: {{ member.name }}</p>
-            <p>Vote: {{ member.get_vote_from_roll_call(bill) }}</p>
+            <p><strong>{{ member.title }} {{ member.name }}:</strong> {{ member.get_vote_from_roll_call(bill) }}</p>
         {% endfor %}
     {% endif %}
 
