@@ -48,8 +48,8 @@ def user_profile():
 @app.route('/congresspeople')
 def show_congress():
     """Creates a page of current congress divided by senators and representatives"""
-    representatives = Congressperson.get_representatives()
 
+    representatives = Congressperson.get_representatives()
     senators = Congressperson.get_senators()
 
     return render_template("congress_list.html", representatives=representatives, senators=senators)
@@ -67,6 +67,8 @@ def show_categories():
 
 @app.route('/add-categories', methods=['POST'])
 def add_user_categories():
+    """"""
+
     if session.get('user_id'):
         categories = request.form.getlist("categories")
         user_categories = [UserCategory(user_id=session['user_id'], category_id=category_id)
@@ -75,6 +77,7 @@ def add_user_categories():
         db.session.commit()
         flash("You have added categories to your profile")
         return redirect('/')
+
     else:
         flash("You are not logged in and do not have access to this page")
         return redirect('/')
@@ -83,6 +86,7 @@ def add_user_categories():
 @app.route('/user-categories')
 def show_user_categories():
     """"""
+
     if session.get('user_id'):
         user = User.query.get(session['user_id'])
         categories = Category.query.join(UserCategory).filter_by(user_id=user.user_id).all()
@@ -92,8 +96,11 @@ def show_user_categories():
         flash("You are not logged in and do not have access to this page")
         return redirect('/')
 
+
 @app.route('/remove-categories', methods=['POST'])
 def remove_user_categories():
+    """"""
+
     if session.get('user_id'):
         user_id = session['user_id']
         category_ids = request.form.get('categories')
@@ -116,39 +123,38 @@ def remove_user_categories():
         return redirect('/')
 
 
-
 ########################################################################################################################
 # Bill Pages
-
 
 @app.route('/categories/<category_id>')
 def show_bills_by_category(category_id):
     """"""
+
     category = Category.query.filter_by(category_id=category_id).first()
-    bills = Bill.get_bills_by_category(category)
+    bills = Bill.retrieve_bills_by_category(category)
     [print(bill) for bill in bills]
+
     return render_template("bills_by_category.html", category=category, bills=bills)
 
 
 @app.route('/bills/<bill_id>')
 def show_bill_info(bill_id):
     """"""
+
     if session.get('user_id'):
         user = User.query.get(session['user_id'])
+
     else:
         user = None
 
-    print()
-
     bill = Bill.query.get(bill_id)
     bill.set_roll_call_info()
-    return render_template("bill_info.html", bill=bill, user=user)
 
+    return render_template("bill_info.html", bill=bill, user=user)
 
 
 ########################################################################################################################
 # Registration and Login Pages
-
 
 @app.route('/register', methods=["GET"])
 def register_form():
