@@ -39,7 +39,9 @@ class User(db.Model):
 
 
     def find_representatives(self):
-        """Finds the politicians that represent the user based on user's address"""
+        """Finds the politicians that represent the user based on user's address
+        :return congresspeople associated with User's address
+        """
 
         # Retrieves json from google api to get json of local politicians
         search_address = "&address=" + self.address
@@ -48,16 +50,13 @@ class User(db.Model):
 
         politician_info = politician_json['officials']
 
-        # something
+        # instantiate list for politicians and loop through json
         congresspeople = []
-
         for politician in politician_info:
+            # eliminate middle names so we can find politicians based on first and last name
+            name = remove_middle_name(politician['name'])
 
-            name_parts = politician['name'].split(" ")
-            for part in name_parts:
-                if '.' in part:
-                    name_parts.remove(part)
-            name = " ".join(name_parts)
+            # check if congressperson is in database, if so, add them to list
             congressperson = Congressperson.query.filter_by(name=name).first()
 
             if congressperson:
@@ -65,7 +64,11 @@ class User(db.Model):
         return congresspeople
 
     def add_user_categories(self, categories):
-        """"""
+        """Adds a list of categories associated with user to database
+            :param categories: categories to be added that will now be associated with User instance
+            :type categories: list of Category
+            :return None
+        """
 
         added_categories = []
 
@@ -81,7 +84,9 @@ class User(db.Model):
 # Helper Functions
 
 def create_dummy_user():
-    """"""
+    """Creates a default user for testing out web app
+        :return None
+    """
 
     user = User(screen_name="ione",
                 email="ione@ione.com",
@@ -90,11 +95,24 @@ def create_dummy_user():
     db.session.add(user)
     db.session.commit()
 
+def remove_middle_name(name):
+    """Removes middle name from politician for easier integration of conflicting apis
+        :param name: name of politician
+        :return name without middle name
+    """
+
+    name_parts = name.split(" ")
+    for part in name_parts:
+        if '.' in part:
+            name_parts.remove(part)
+    return " ".join(name_parts)
+
+
 ########################################################################################################################
 # Category definition
 
 class Category(db.Model):
-    """"""
+    """Category for Voter Info Project"""
 
     __tablename__ = "categories"
 
@@ -102,10 +120,12 @@ class Category(db.Model):
     name = db.Column(db.String(128), unique=True, nullable=False)
 
 
-
 # Helper Functions
 
 def load_categories_into_db():
+    """Loads categories into database from text file
+        :return None
+    """
     with open("subjects.txt") as file:
         categories = []
         for line in file:
@@ -120,7 +140,7 @@ def load_categories_into_db():
 # Congressperson definition
 
 class Congressperson(db.Model):
-    """"""
+    """Congressperson for Voter Info Project"""
 
     __tablename__ = "congresspeople"
 
@@ -136,12 +156,19 @@ class Congressperson(db.Model):
 
 
     def get_election_year(self):
+        """Getter so just the year is returned, instead of nonsensical month/day
+            :return year of next election
+        """
         return self.next_election.year
 
 
 
     @classmethod
     def get_senators(cls):
+        """Gets all congresspeople with the title Senator from database
+            :return all Senators
+        """
+
         senators = cls.query.filter(cls.title.like("Senator%")).all()
         return senators
 
@@ -490,13 +517,6 @@ if __name__ == "__main__":
         except ValueError:
             print('Decoding JSON has failed')
 
-    # Bill.parse_bills_by_category(Category.query.get(31))
-    # Bill.parse_bills_by_category(Category.query.get(50))
-    # Bill.parse_bills_by_category(Category.query.get(1))
-    #
-    # bills = Bill.query.all()
-    # [print(bill) for bill in bills]
-    # [print(bill_category) for bill_category in BillCategory.query.all()]
     print("\n\n\n=============================================")
 
 
