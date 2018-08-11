@@ -5,7 +5,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
-from model import Bill, Congressperson, User, Category, UserCategory, db
+from model import Bill, Congressperson, Category, UserCategory, db
+from model.user import User
 
 
 app = Flask(__name__)
@@ -90,6 +91,7 @@ def show_user_categories():
     if session.get('user_id'):
         user = User.query.get(session['user_id'])
         categories = Category.query.join(UserCategory).filter_by(user_id=user.user_id).all()
+        print(categories)
         return render_template("user_categories.html", categories=categories)
 
     else:
@@ -105,18 +107,18 @@ def remove_user_categories():
         user_id = session['user_id']
         category_ids = request.form.get('categories')
 
-        user_categories = []
-
         for category_id in category_ids:
+            print(user_id)
+            print(category_id)
             user_category = UserCategory.query.filter_by(user_id=user_id, category_id=category_id).first()
-            user_categories.append(user_category)
+            print(user_category)
             db.session.delete(user_category)
             db.session.commit()
 
         flash("Successfully removed categories")
 
         categories = Category.query.join(UserCategory).filter_by(user_id=user_id).all()
-        return render_template("user_categories.html", categories=categories)
+        return redirect('/user-categories')
 
     else:
         flash("You are not logged in and do not have access to this page")
