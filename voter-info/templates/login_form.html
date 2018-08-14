@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
 
+
+
 <form action="/login" method="POST">
-    <table>
-        <tr>
-            <td><label for="Username">Username</label></td>
-            <td><input type="text" name="username" id="username"></td>
-        </tr>
-        <tr>
-            <td><label for="password">Password</label></td>
-            <td><input type="password" name="password" id="password" value="password-input"></td>
-        </tr>
-    </table>
-	<input type ="submit" name="submit" value="Log In">
+    <div class="form-group">
+        <label for="username">Username</label><br>
+        <input type="text" name="username" id="username"><br>
+
+        <label for="password">Password</label><br>
+        <input type="password" name="password" id="password" value="password-input"><br>
+
+        <input type="submit" name="submit" value="Log In"><br>
+    </div>
 </form>
 
 {% endblock %}
+

@@ -7,6 +7,7 @@ from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
 from model import Bill, Congressperson, Category, UserCategory, db
 from model.user import User
+from api_request import find_representatives
 
 
 app = Flask(__name__)
@@ -40,7 +41,8 @@ def user_profile():
 
     user_id = session["user_id"]
     user = User.query.get(user_id)
-    return render_template("user_profile.html", user=user)
+    representatives = find_representatives(user)
+    return render_template("user_profile.html", user=user, representatives=representatives)
 
 
 ########################################################################################################################
@@ -145,14 +147,16 @@ def show_bill_info(bill_id):
 
     if session.get('user_id'):
         user = User.query.get(session['user_id'])
+        representatives = find_representatives(user)
 
     else:
         user = None
+        representatives = None
 
     bill = Bill.query.get(bill_id)
     bill.set_roll_call_info()
 
-    return render_template("bill_info.html", bill=bill, user=user)
+    return render_template("bill_info.html", bill=bill, user=user, representatives=representatives)
 
 
 ########################################################################################################################

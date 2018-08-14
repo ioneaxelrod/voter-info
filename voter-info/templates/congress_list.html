@@ -1,32 +1,84 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>Senate</h2>
+<div class="container">
+    <h2>Current Congresspeople</h2><br><br>
+</div>
+
+
+<div class="container">
+<h2>Senate</h2><br>
 {% for senator in senators %}
-    <h3>{{ senator.title }} {{ senator.name }} {{ senator.party }}</h3>
-    <strong><p>Next Election in {{ senator.get_election_year() }}</p></strong>
-    <strong><p>Contact Info</p></strong>
-    <ul>
-        <li>Phone Number: {{ senator.phone }}</li>
-        <li>Facebook: {{ senator.facebook }}</li>
-        <li>Twitter: {{ senator.twitter }}</li>
-        <li>YouTube: {{ senator.youtube }}</li>
-    </ul>
+    <div class="accordion" id="accordion1">
+      <div class="card">
+        <div class="card-header" id="heading{{ senator.congress_id }}">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed"
+                    type="button" data-toggle="collapse"
+                    data-target="#{{ senator.congress_id }}"
+                    aria-expanded="false"
+                    aria-controls="collapseTwo">
+                {{ senator.title }} {{ senator.name }} {{ senator.party }}
+            </button>
+          </h5>
+        </div>
+        <div id="{{ senator.congress_id }}"
+             class="collapse"
+             aria-labelledby="heading{{ senator.congress_id }}"
+             data-parent="#accordion1">
+          <div class="card-body">
+              <strong><p>Next Election in {{ senator.get_election_year() }}</p></strong>
+              <strong><p>Contact Info</p></strong>
+              <ul>
+                  <li>Phone Number: {{ senator.phone }}</li>
+                  <li>Facebook: {{ senator.facebook }}</li>
+                  <li>Twitter: {{ senator.twitter }}</li>
+                  <li>YouTube: {{ senator.youtube }}</li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endfor %}
+</div>
+    <br><br>
+    <hr>
+    <br>
 
-<br><br><hr><br>
-
-<h2>House</h2>
+<div class="container">
+<h2>House</h2><br>
 {% for rep in representatives %}
-    <h3>{{ rep.title }} {{ rep.name }} {{ rep.party }}</h3>
-    <strong><p>Next Election in {{ rep.get_election_year() }}</p></strong>
-    <strong><p>Contact Info</p></strong>
-    <ul>
-        <li>Phone Number: {{ rep.phone }}</li>
-        <li>Facebook: {{ rep.facebook }}</li>
-        <li>Twitter: {{ rep.twitter }}</li>
-        <li>YouTube: {{ rep.youtube }}</li>
-    </ul>
+    <div class="accordion" id="accordion2">
+      <div class="card">
+        <div class="card-header" id="heading{{ rep.congress_id }}">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed"
+                    type="button" data-toggle="collapse"
+                    data-target="#{{ rep.congress_id }}"
+                    aria-expanded="false"
+                    aria-controls="collapseTwo">
+                {{ rep.title }} {{ rep.name }} {{ rep.party }}
+            </button>
+          </h5>
+        </div>
+        <div id="{{ rep.congress_id }}"
+             class="collapse"
+             aria-labelledby="heading{{ rep.congress_id }}"
+             data-parent="#accordion2">
+          <div class="card-body">
+              <strong><p>Next Election in {{ rep.get_election_year() }}</p></strong>
+              <strong><p>Contact Info</p></strong>
+              <ul>
+                  <li>Phone Number: {{ rep.phone }}</li>
+                  <li>Facebook: {{ rep.facebook }}</li>
+                  <li>Twitter: {{ rep.twitter }}</li>
+                  <li>YouTube: {{ rep.youtube }}</li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endfor %}
+</div>
 
 {% endblock %}

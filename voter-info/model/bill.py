@@ -1,7 +1,8 @@
 from .db import db
-from .helpers import parse_bills_from_json, format_category_name, get_bill_slug
-from .consts import *
+from .consts import ROLL_CALL_URL, PROPUBLICA_KEY
+from .category import Category
 import requests
+
 
 class Bill(db.Model):
     """Bill for Voter Info Project"""
@@ -20,30 +21,23 @@ class Bill(db.Model):
     house_votes_url = None
     senate_votes_url = None
 
-    @classmethod
-    def parse_bills_by_category(cls, category):
-        """Grabs 20 most recent bills from ProPublica api associated with specific subject/category
-            :param category: Category which you want to associate bills with
-            :return None: Update database with bills associated with category
-        """
+    def get_bill_slug(self):
+        """Formats bill_id into bill slug
+            :return str: bill slug
+         """
 
-        # Create subject so it can be passed into REST call and place in URL
-        subject = format_category_name(category)
-        search_url = BILL_BY_CATEGORY_URL.replace("{subject}", subject)
-        print(search_url)
+        return self.bill_id.split("-")[0]
 
-        # Send request and parse it
-        fill_bill_request = requests.get(search_url, headers={'X-API-Key': PROPUBLICA_KEY})
-        print(fill_bill_request.text)
-        bill_json = fill_bill_request.json()
-
-        parse_bills_from_json(bill_json, category)
 
     @classmethod
     def retrieve_bills_by_category(cls, category):
         """Gets bills associated with category from database
             :param category: Category you want bills to be associated with
             :return [Bill]: bills of the category you want
+
+            >>> category = Category(category_id=1)
+            >>> bill = Bill.retrieve_bills_by_category(category).first()
+            bill.category_id = category.category_id
         """
         from . import BillCategory
 
@@ -55,7 +49,7 @@ class Bill(db.Model):
         """
 
         # Create bill slug, then use it to call ProPublica api
-        bill_slug = get_bill_slug(self.bill_id)
+        bill_slug = self.get_bill_slug()
         search_url = ROLL_CALL_URL.replace("{bill-id}", bill_slug)
         print(search_url)
 
@@ -72,7 +66,6 @@ class Bill(db.Model):
             results = bill_json['results'][0]['votes']
             if results:
                 self.parse_roll_call_info(results)
-
 
     def parse_roll_call_info(self, json_results):
         """Takes a bill json and checks for roll call info.
@@ -93,4 +86,3 @@ class Bill(db.Model):
                 self.senate_roll_call = result['roll_call']
                 self.senate_votes_url = result['api_url']
                 break
-

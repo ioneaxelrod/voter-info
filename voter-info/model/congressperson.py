@@ -1,6 +1,6 @@
 from .db import db
 import requests
-from .consts import *
+from .consts import PROPUBLICA_KEY
 from .helpers import parse_vote_from_json
 
 class Congressperson(db.Model):
@@ -18,14 +18,11 @@ class Congressperson(db.Model):
     facebook = db.Column(db.String(64))
     youtube = db.Column(db.String(64))
 
-
     def get_election_year(self):
         """Getter so just the year is returned, instead of nonsensical month/day
             :return int: year of next election
         """
         return self.next_election.year
-
-
 
     @classmethod
     def get_senators(cls):
@@ -65,6 +62,3 @@ class Congressperson(db.Model):
         vote_request = requests.get(vote_url, headers={'X-API-Key': PROPUBLICA_KEY})
         vote_json = vote_request.json()
         return parse_vote_from_json(vote_json, self)
-
-
-

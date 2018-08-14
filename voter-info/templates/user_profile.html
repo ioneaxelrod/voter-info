@@ -1,18 +1,63 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Your Profile</h1>
-<h2>Your federal congresspeople</h2>
 
-    {% for found in user.find_representatives() %}
-    <h3>{{ found.title }} {{ found.name }} {{ found.party }}</h3>
-    <strong><p>Next Election in {{ found.get_election_year() }}</p></strong>
-    <strong><p>Contact Info</p></strong>
-    <ul>
-        <li>Phone Number: {{ found.phone }}</li>
-        <li>Facebook: {{ found.facebook }}</li>
-        <li>Twitter: {{ found.twitter }}</li>
-        <li>YouTube: {{ found.youtube }}</li>
-    </ul>
-    {% endfor %}
+<div class="container">
+<h2>User Profile</h2><br>
+<h3>These People Represent You</h3><br>
+
+    {% for rep in representatives %}
+    <div class="accordion" id="accordion1">
+      <div class="card">
+        <div class="card-header" id="heading{{ rep.congress_id }}">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed"
+                    type="button" data-toggle="collapse"
+                    data-target="#{{ rep.congress_id }}"
+                    aria-expanded="false"
+                    aria-controls="collapseTwo">
+                {{ rep.title }} {{ rep.name }} {{ rep.party }}
+            </button>
+          </h5>
+        </div>
+        <div id="{{ rep.congress_id }}"
+             class="collapse"
+             aria-labelledby="heading{{ rep.congress_id }}"
+             data-parent="#accordion1">
+          <div class="card-body">
+              <strong><p>Next Election in {{ rep.get_election_year() }}</p></strong>
+              <strong><p>Contact Info</p></strong>
+              <ul>
+                  <li>Phone Number: {{ rep.phone }}</li>
+                  <li>Facebook: {{ rep.facebook }}</li>
+                  <li>Twitter: {{ rep.twitter }}</li>
+                  <li>YouTube: {{ rep.youtube }}</li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+</div>
+    <br><br>
+    <hr>
+
+<!--<h2>Your Profile</h2>-->
+<!--<h3>Your federal congresspeople</h3>-->
+
+    <!--{% for found in representatives %}-->
+    <!--<h3>{{ found.title }} {{ found.name }} {{ found.party }}</h3>-->
+    <!--<strong><p>Next Election in {{ found.get_election_year() }}</p></strong>-->
+    <!--<strong><p>Contact Info</p></strong>-->
+    <!--<ul>-->
+        <!--<li>Phone Number: {{ found.phone }}</li>-->
+        <!--<li>Facebook: {{ found.facebook }}</li>-->
+        <!--<li>Twitter: {{ found.twitter }}</li>-->
+        <!--<li>YouTube: {{ found.youtube }}</li>-->
+    <!--</ul>-->
+    <!--{% endfor %}-->
+
+
+
 {% endblock %}
+
