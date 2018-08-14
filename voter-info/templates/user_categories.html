@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-
-<h2>Your Watched Categories</h2>
-
-        <form action="/remove-categories" method="POST">
+<div class="container">
+    <br><br>
+    <h2><strong>Your Watched Categories</strong></h2><br>
+    <form action="/remove-categories" method="POST">
         {% for category in categories %}
-            <p><a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
-            <input type="checkbox" id="{{ category.category_id }}" name="categories" value="{{ category.category_id }}"></p>
+        <p><a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
+            <input type="checkbox" id="{{ category.category_id }}" name="categories" value="{{ category.category_id }}">
+        </p>
         {% endfor %}
-         <input type ="submit" name="submit" value="Remove Categories">
-         </form>
-
+        <input type="submit" name="submit" value="Remove Categories">
+    </form>
+</div>
 {% endblock %}
 

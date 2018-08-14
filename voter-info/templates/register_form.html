@@ -1,24 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<form action="/register" method="POST">
-    <div class="form-group">
-        <label for="username">Username</label><br>
-        <input type="text" name="username" id="username"><br>
+<div class="container">
+    <br><br>
+    <h2><strong>Register</strong></h2><br>
 
-        <label for="email">Email</label><br>
-        <input type="email" name="email" id="email"><br>
+    <form action="/register" method="POST">
+        <div class="form-group">
+            <label for="username">Username</label><br>
+            <input type="text" class="form-control form-control-lg" name="username" id="username"><br>
 
-        <label for="address">Address</label><br>
-        <input type="text" name="address" id="address"><br>
+            <label for="email">Email</label><br>
+            <input type="email" class="form-control form-control-lg" name="email" id="email"><br>
 
-        <label for="password">Password</label><br>
-        <input type="password" name="password" id="password" value="password-input"><br><br>
+            <label for="address">Address</label><br>
+            <input type="text" class="form-control form-control-lg" name="address" id="address"><br>
 
-        <input type ="submit" name="submit" value="Register"><br>
-    </div>
-</form>
+            <label for="password">Password</label><br>
+            <input type="password" class="form-control form-control-lg" name="password" id="password" value="password-input"><br><br>
 
+            <input type ="submit" class="form-control form-control-lg" name="submit" value="Register"><br>
+        </div>
+    </form>
+</div>
 {% endblock %}
 
 

@@ -2,44 +2,52 @@
 {% block content %}
 
 <div class="container">
-    <h2>Current Congresspeople</h2><br><br>
+    <br><br>
+
+    <h2><strong>Current Congresspeople</strong></h2><br><br>
 </div>
 
 
 <div class="container">
-<h2>Senate</h2><br>
-{% for senator in senators %}
-    <div class="accordion" id="accordion1">
-      <div class="card">
-        <div class="card-header" id="heading{{ senator.congress_id }}">
-          <h5 class="mb-0">
-            <button class="btn btn-link collapsed"
-                    type="button" data-toggle="collapse"
-                    data-target="#{{ senator.congress_id }}"
-                    aria-expanded="false"
-                    aria-controls="collapseTwo">
-                {{ senator.title }} {{ senator.name }} {{ senator.party }}
-            </button>
-          </h5>
-        </div>
-        <div id="{{ senator.congress_id }}"
-             class="collapse"
-             aria-labelledby="heading{{ senator.congress_id }}"
-             data-parent="#accordion1">
-          <div class="card-body">
-              <strong><p>Next Election in {{ senator.get_election_year() }}</p></strong>
-              <strong><p>Contact Info</p></strong>
-              <ul>
+    <h2>Senate</h2><br>
+    {% for senator in senators %}
+        <div class="accordion" id="accordion1">
+          <div class="card">
+            <div class="card-header" id="heading{{ senator.congress_id }}">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed"
+                        type="button" data-toggle="collapse"
+                        data-target="#{{ senator.congress_id }}"
+                        aria-expanded="false"
+                        aria-controls="collapseTwo">
+                    {{ senator.title }} {{ senator.name }} {{ senator.party }}
+                </button>
+              </h5>
+            </div>
+            <div id="{{ senator.congress_id }}"
+                 class="collapse"
+                 aria-labelledby="heading{{ senator.congress_id }}"
+                 data-parent="#accordion1">
+              <div class="card-body">
+                  <strong><p>Next Election in {{ senator.get_election_year() }}</p></strong>
+                  <strong><p>Contact Info</p></strong>
                   <li>Phone Number: {{ senator.phone }}</li>
-                  <li>Facebook: {{ senator.facebook }}</li>
-                  <li>Twitter: {{ senator.twitter }}</li>
-                  <li>YouTube: {{ senator.youtube }}</li>
-              </ul>
+                  {% if senator.facebook %}
+                  <li>Facebook: <a href="https://www.facebook.com/{{ senator.facebook }}">{{ senator.facebook }}</a></li>
+                  {% endif %}
+
+                  {% if senator.twitter %}
+                  <li>Twitter: <a href="https://twitter.com/{{ senator.twitter }}">{{ senator.twitter }}</a></li>
+                  {% endif %}
+
+                  {% if senator.youtube %}
+                  <li>YouTube: <a href="https://www.youtube.com/user/{{ senator.youtube }}">{{ senator.youtube }}</a></li>
+                  {% endif %}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-{% endfor %}
+    {% endfor %}
 </div>
     <br><br>
     <hr>
@@ -70,9 +78,17 @@
               <strong><p>Contact Info</p></strong>
               <ul>
                   <li>Phone Number: {{ rep.phone }}</li>
-                  <li>Facebook: {{ rep.facebook }}</li>
-                  <li>Twitter: {{ rep.twitter }}</li>
-                  <li>YouTube: {{ rep.youtube }}</li>
+                  {% if rep.facebook %}
+                  <li>Facebook: <a href="https://www.facebook.com/{{ rep.facebook }}">{{ rep.facebook }}</a></li>
+                  {% endif %}
+
+                  {% if rep.twitter %}
+                  <li>Twitter: <a href="https://twitter.com/{{ rep.twitter }}">{{ rep.twitter }}</a></li>
+                  {% endif %}
+
+                  {% if rep.youtube %}
+                  <li>YouTube: <a href="https://www.youtube.com/user/{{ rep.youtube }}">{{ rep.youtube }}</a></li>
+                  {% endif %}
               </ul>
           </div>
         </div>

@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-
-<h2>{{ category.name }}</h2>
-    {% for bill in bills %}
-        <p><a href="/bills/{{ bill.bill_id }}">{{ bill.bill_title }}</a></p>
-    {% endfor %}
-
+<div class="container">
+    <br><br>
+    <h2><strong>{{ category.name }}</strong></h2>
+        {% for bill in bills %}
+            <p><a href="/bills/{{ bill.bill_id }}">{{ bill.bill_title }}</a></p>
+        {% endfor %}
+</div>
 {% endblock %}

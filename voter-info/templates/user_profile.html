@@ -3,8 +3,9 @@
 
 
 <div class="container">
-<h2>User Profile</h2><br>
-<h3>These People Represent You</h3><br>
+    <br><br>
+    <h2><strong>Your Profile</strong></h2><br>
+    <h3>These People Represent You</h3><br>
 
     {% for rep in representatives %}
     <div class="accordion" id="accordion1">
@@ -29,9 +30,18 @@
               <strong><p>Contact Info</p></strong>
               <ul>
                   <li>Phone Number: {{ rep.phone }}</li>
-                  <li>Facebook: {{ rep.facebook }}</li>
-                  <li>Twitter: {{ rep.twitter }}</li>
-                  <li>YouTube: {{ rep.youtube }}</li>
+                  {% if rep.facebook %}
+                  <li>Facebook: <a href="https://www.facebook.com/{{ rep.facebook }}">{{ rep.facebook }}</a></li>
+                  {% endif %}
+
+                  {% if rep.twitter %}
+                  <li>Twitter: <a href="https://twitter.com/{{ rep.twitter }}">{{ rep.twitter }}</a></li>
+                  {% endif %}
+
+                  {% if rep.youtube %}
+                  <li>YouTube: <a href="https://www.youtube.com/user/{{ rep.youtube }}">{{ rep.youtube }}</a></li>
+                  {% endif %}
+
               </ul>
           </div>
         </div>
@@ -41,23 +51,6 @@
 </div>
     <br><br>
     <hr>
-
-<!--<h2>Your Profile</h2>-->
-<!--<h3>Your federal congresspeople</h3>-->
-
-    <!--{% for found in representatives %}-->
-    <!--<h3>{{ found.title }} {{ found.name }} {{ found.party }}</h3>-->
-    <!--<strong><p>Next Election in {{ found.get_election_year() }}</p></strong>-->
-    <!--<strong><p>Contact Info</p></strong>-->
-    <!--<ul>-->
-        <!--<li>Phone Number: {{ found.phone }}</li>-->
-        <!--<li>Facebook: {{ found.facebook }}</li>-->
-        <!--<li>Twitter: {{ found.twitter }}</li>-->
-        <!--<li>YouTube: {{ found.youtube }}</li>-->
-    <!--</ul>-->
-    <!--{% endfor %}-->
-
-
 
 {% endblock %}
 

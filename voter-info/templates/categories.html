@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="container">
+    <br><br>
+        <h2><strong>Bill Categories</strong></h2><br>
 
-<h2>Bill Categories</h2>
-    {% if session["user_id"] is defined %}
-        <form action="/add-categories" method="POST">
-        {% for category in categories %}
-            <p><a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
-            <input type="checkbox" id="{{ category.category_id }}" name="categories" value="{{ category.category_id }}"></p>
-        {% endfor %}
-         <input type ="submit" name="submit" value="Add Categories">
-         </form>
-    {% else %}
-        {% for category in categories %}
-            <p><a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
-        {% endfor %}
-    {% endif %}
-
+        {% if session["user_id"] is defined %}
+            <form action="/add-categories" method="POST">
+            {% for category in categories %}
+                <p><a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
+                <input type="checkbox" id="{{ category.category_id }}" name="categories" value="{{ category.category_id }}"></p>
+            {% endfor %}
+             <input type ="submit" name="submit" value="Add Categories">
+             </form>
+        {% else %}
+            {% for category in categories %}
+                <p><a href="/categories/{{ category.category_id }}">{{ category.name }}</a></p>
+            {% endfor %}
+        {% endif %}
+</div>
 {% endblock %}
