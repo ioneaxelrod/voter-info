@@ -107,19 +107,20 @@ def remove_user_categories():
 
     if session.get('user_id'):
         user_id = session['user_id']
-        category_ids = request.form.get('categories')
-
+        category_ids = request.form.getlist('categories')
         for category_id in category_ids:
-            print(user_id)
-            print(category_id)
-            user_category = UserCategory.query.filter_by(user_id=user_id, category_id=category_id).first()
-            print(user_category)
-            db.session.delete(user_category)
-            db.session.commit()
+
+            try:
+                user_category = UserCategory.query.filter_by(user_id=user_id, category_id=category_id).one()
+
+            except NoResultFound:
+                flash(f"Could not delete category {category_id}")
+
+            else:
+                db.session.delete(user_category)
+                db.session.commit()
 
         flash("Successfully removed categories")
-
-        categories = Category.query.join(UserCategory).filter_by(user_id=user_id).all()
         return redirect('/user-categories')
 
     else:

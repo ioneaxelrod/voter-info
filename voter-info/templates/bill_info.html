@@ -3,7 +3,12 @@
 <div class="container">
     <br><br>
     <h2><strong><a href="{{ bill.bill_uri }}">{{ bill.bill_title }}</a></strong></h2>
+    <br>
+</div>
+
+<div class="container">
     <h3><strong>Bill Id:</strong> {{ bill.bill_id }}</h3>
+    <br>
 
     {% if bill.senate_roll_call %}
         <p><strong>Senate Roll Call:</strong> {{ bill.senate_roll_call }}</p>
@@ -14,14 +19,17 @@
     {% endif %}
 
     {% if bill.summary != None %}
+        <br>
         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Summary</button>
         <div id="demo" class="collapse">
-            {{ bill.summary }}
+            <br>
+            <em>{{ bill.summary }}</em>
         </div><br><br>
     {% endif %}
 
     {% if user %}
         <h2>Your Members of Congress Voted...</h2>
+        <br>
         {% for member in representatives %}
             <p><strong>{{ member.title }} {{ member.name }}:</strong> {{ member.get_vote_from_roll_call(bill) }}</p>
         {% endfor %}

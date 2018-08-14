@@ -4,11 +4,7 @@
 <div class="container">
     <br><br>
 
-    <h2><strong>Current Congresspeople</strong></h2><br><br>
-</div>
-
-
-<div class="container">
+    <h2><strong>Current Congresspeople</strong></h2><br>
     <h2>Senate</h2><br>
     {% for senator in senators %}
         <div class="accordion" id="accordion1">
@@ -31,17 +27,17 @@
               <div class="card-body">
                   <strong><p>Next Election in {{ senator.get_election_year() }}</p></strong>
                   <strong><p>Contact Info</p></strong>
-                  <li>Phone Number: {{ senator.phone }}</li>
+                  <li><i class="fa fa-phone"></i>: {{ senator.phone }}</li>
                   {% if senator.facebook %}
-                  <li>Facebook: <a href="https://www.facebook.com/{{ senator.facebook }}">{{ senator.facebook }}</a></li>
+                  <li><i class="fa fa-facebook"></i>: <a href="https://www.facebook.com/{{ senator.facebook }}">{{ senator.facebook }}</a></li>
                   {% endif %}
 
                   {% if senator.twitter %}
-                  <li>Twitter: <a href="https://twitter.com/{{ senator.twitter }}">{{ senator.twitter }}</a></li>
+                  <li><i class="fa fa-twitter"></i>: <a href="https://twitter.com/{{ senator.twitter }}">{{ senator.twitter }}</a></li>
                   {% endif %}
 
                   {% if senator.youtube %}
-                  <li>YouTube: <a href="https://www.youtube.com/user/{{ senator.youtube }}">{{ senator.youtube }}</a></li>
+                  <li><i class="fa fa-youtube"></i>: <a href="https://www.youtube.com/user/{{ senator.youtube }}">{{ senator.youtube }}</a></li>
                   {% endif %}
               </div>
             </div>
@@ -77,17 +73,17 @@
               <strong><p>Next Election in {{ rep.get_election_year() }}</p></strong>
               <strong><p>Contact Info</p></strong>
               <ul>
-                  <li>Phone Number: {{ rep.phone }}</li>
+                  <li><i class="fa fa-phone"></i>: {{ rep.phone }}</li>
                   {% if rep.facebook %}
-                  <li>Facebook: <a href="https://www.facebook.com/{{ rep.facebook }}">{{ rep.facebook }}</a></li>
+                  <li><i class="fa fa-facebook"></i>: <a href="https://www.facebook.com/{{ rep.facebook }}">{{ rep.facebook }}</a></li>
                   {% endif %}
 
                   {% if rep.twitter %}
-                  <li>Twitter: <a href="https://twitter.com/{{ rep.twitter }}">{{ rep.twitter }}</a></li>
+                  <li><i class="fa fa-twitter"></i>: <a href="https://twitter.com/{{ rep.twitter }}">{{ rep.twitter }}</a></li>
                   {% endif %}
 
                   {% if rep.youtube %}
-                  <li>YouTube: <a href="https://www.youtube.com/user/{{ rep.youtube }}">{{ rep.youtube }}</a></li>
+                  <li><i class="fa fa-youtube"></i>: <a href="https://www.youtube.com/user/{{ rep.youtube }}">{{ rep.youtube }}</a></li>
                   {% endif %}
               </ul>
           </div>

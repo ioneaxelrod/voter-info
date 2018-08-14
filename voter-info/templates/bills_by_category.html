@@ -3,8 +3,12 @@
 <div class="container">
     <br><br>
     <h2><strong>{{ category.name }}</strong></h2>
+    <ul class="list-group">
         {% for bill in bills %}
-            <p><a href="/bills/{{ bill.bill_id }}">{{ bill.bill_title }}</a></p>
+        <li class="list-group-item">
+            <a href="/bills/{{ bill.bill_id }}">{{ bill.bill_title }}</a>
+        </li>
         {% endfor %}
+    </ul>
 </div>
 {% endblock %}

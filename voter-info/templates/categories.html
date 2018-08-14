@@ -6,11 +6,19 @@
 
         {% if session["user_id"] is defined %}
             <form action="/add-categories" method="POST">
-            {% for category in categories %}
-                <p><a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
-                <input type="checkbox" id="{{ category.category_id }}" name="categories" value="{{ category.category_id }}"></p>
-            {% endfor %}
-             <input type ="submit" name="submit" value="Add Categories">
+                <ul class="list-group">
+                    {% for category in categories %}
+                        <li class="list-group-item">
+                            <a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
+                            <input type="checkbox" id="{{ category.category_id }}"
+                                   name="categories"
+                                   value="{{ category.category_id }}">
+                        </li>
+                    {% endfor %}
+                </ul>
+                <br>
+                <input type ="submit" name="submit" value="Add Categories">
+
              </form>
         {% else %}
             {% for category in categories %}
