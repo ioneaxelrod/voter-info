@@ -7,7 +7,7 @@
     <ul class="list-group">
         {% for bill in bills %}
         <li class="list-group-item">
-            <a href="/bills/{{ bill.bill_id }}">{{ bill.bill_title }}</a>
+            <a href="/bills/{{ bill.bill_id }}"><em>{{ bill.bill_title }}</em></a>
         </li>
         {% endfor %}
     </ul>

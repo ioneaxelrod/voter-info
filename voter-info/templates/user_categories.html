@@ -8,7 +8,7 @@
             {% for category in categories %}
                 <li class="d-flex list-group-item">
                     <div class="mr-auto">
-                        <a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
+                        <a href="/categories/{{ category.category_id }}"><em>{{ category.name }}</em></a>
                     </div>
                     <div class="ml-auto">
                         <input type="checkbox" id="{{ category.category_id }}" name="categories"
