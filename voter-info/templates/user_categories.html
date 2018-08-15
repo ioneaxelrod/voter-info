@@ -6,9 +6,14 @@
         <form action="/remove-categories" method="POST">
             <ul class="list-group">
             {% for category in categories %}
-                <li class="list-group-item">
-                    <a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
-                    <input type="checkbox" id="{{ category.category_id }}" name="categories" value="{{ category.category_id }}">
+                <li class="d-flex list-group-item">
+                    <div class="mr-auto">
+                        <a href="/categories/{{ category.category_id }}">{{ category.name }}</a>
+                    </div>
+                    <div class="ml-auto">
+                        <input type="checkbox" id="{{ category.category_id }}" name="categories"
+                               value="{{ category.category_id }}">
+                    </div>
                 </li>
             {% endfor %}
             </ul>
