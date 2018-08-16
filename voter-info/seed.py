@@ -69,6 +69,10 @@ def parse_members_from_json(json):
             twitter = member['twitter_account']
             facebook = member['facebook_account']
             youtube = member['youtube_account']
+            try:
+                votes_with_party_pct = member['votes_with_party_pct']
+            except KeyError:
+                votes_with_party_pct = None;
 
 
             congressperson = Congressperson(congress_id=congress_id,
@@ -76,6 +80,7 @@ def parse_members_from_json(json):
                                             title=title,
                                             party=party,
                                             phone=phone,
+                                            votes_with_party_pct=votes_with_party_pct,
                                             next_election=next_election,
                                             twitter=twitter,
                                             facebook=facebook,

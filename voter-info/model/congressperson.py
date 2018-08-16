@@ -13,6 +13,7 @@ class Congressperson(db.Model):
     title = db.Column(db.String(32), nullable=False)
     party = db.Column(db.String(32), nullable=False)
     phone = db.Column(db.String(20))
+    votes_with_party_pct = db.Column(db.Float)
     next_election = db.Column(db.DateTime)
     twitter = db.Column(db.String(64))
     facebook = db.Column(db.String(64))

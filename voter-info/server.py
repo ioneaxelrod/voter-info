@@ -54,8 +54,13 @@ def show_congress():
 
     representatives = Congressperson.get_representatives()
     senators = Congressperson.get_senators()
+    congress = representatives + senators
+    congress_names = [rep.name for rep in congress]
 
-    return render_template("congress_list.html", representatives=representatives, senators=senators)
+    return render_template("congress_list.html",
+                           congress_names=congress_names,
+                           representatives=representatives,
+                           senators=senators)
 
 ########################################################################################################################
 # Category Pages
@@ -65,7 +70,9 @@ def show_congress():
 def show_categories():
     """"""
     categories = Category.query.all()
-    return render_template("categories.html", categories=categories)
+    category_names = [category.name for category in categories]
+    print(category_names)
+    return render_template("categories.html", categories=categories, category_names=category_names)
 
 
 @app.route('/add-categories', methods=['POST'])
@@ -234,6 +241,14 @@ def logout():
     flash("Logged out successfully")
 
     return redirect('/')
+
+########################################################################################################################
+# Playground Functions
+
+@app.route('/play')
+def playChart():
+    return render_template("play_around.html")
+
 
 
 ########################################################################################################################

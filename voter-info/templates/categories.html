@@ -1,16 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-    <br><br>
-    <h2><strong>Bill Categories</strong></h2><br>
+<br><br>
+<div class="container d-flex">
+    <div class="mr-auto">
+        <h2><strong>Bill Categories</strong></h2><br>
+    </div>
+    <div class="ml-auto">
+        <input id="the-basics" class="typeahead form-control" type="text" placeholder="Search Categories">
+    </div>
+</div>
 
+<div class="container">
     {% if session["user_id"] is defined %}
     <form action="/add-categories" method="POST">
         <ul class="list-group">
             {% for category in categories %}
             <li class="d-flex list-group-item">
                 <div class="mr-auto">
-                    <a href="/categories/{{ category.category_id }}"><em>{{ category.name }}</em></a>
+                    <a id="{{ category.name }}"
+                       href="/categories/{{ category.category_id }}"><em>{{ category.name }}</em></a>
                 </div>
                 <div class="ml-auto">
                     <input type="checkbox" id="{{ category.category_id }}" name="categories"
@@ -24,13 +32,68 @@
 
     </form>
     {% else %}
+        <ul class="list-group">
     {% for category in categories %}
             <li class="d-flex list-group-item">
                 <div class="mr-auto">
-                    <a href="/categories/{{ category.category_id }}"><em>{{ category.name }}</em></a>
+                    <a id="{{ category.name }}"
+                       href="/categories/{{ category.category_id }}"><em>{{ category.name }}</em></a>
                 </div>
             </li>
     {% endfor %}
+        </ul>
     {% endif %}
 </div>
+
+<script>
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    $.each(strs, function(i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
+    });
+
+    cb(matches);
+  };
+};
+
+const categoryNames = {{ category_names|safe }};
+
+$('#the-basics').typeahead({
+  hint: true,
+  highlight: true,
+  minLength: 1
+},
+{
+  name: 'categoryNames',
+  source: substringMatcher(categoryNames)
+});
+
+$.fn.scrollView = function () {
+    return this.each(function () {
+        $('html, body').animate({
+            scrollTop: $(this).offset().top
+        }, 1000);
+    });
+}
+
+
+$('.typeahead').bind('typeahead:select', function(ev, suggestion) {
+    console.log(suggestion);
+    document.getElementById(suggestion).scrollIntoView();
+});
+
+</script>
 {% endblock %}
+
