@@ -42,7 +42,8 @@ def user_profile():
     user_id = session["user_id"]
     user = User.query.get(user_id)
     representatives = find_representatives(user)
-    return render_template("user_profile.html", user=user, representatives=representatives)
+    vote_percents = [rep.votes_with_party_pct for rep in representatives]
+    return render_template("user_profile.html", user=user, representatives=representatives, vote_percents=vote_percents)
 
 
 ########################################################################################################################
@@ -56,9 +57,11 @@ def show_congress():
     senators = Congressperson.get_senators()
     congress = representatives + senators
     congress_names = [rep.name for rep in congress]
+    vote_percents = [rep.votes_with_party_pct for rep in congress]
 
     return render_template("congress_list.html",
                            congress_names=congress_names,
+                           vote_percents=vote_percents,
                            representatives=representatives,
                            senators=senators)
 

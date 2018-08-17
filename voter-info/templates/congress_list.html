@@ -31,22 +31,30 @@
                  class="collapse"
                  aria-labelledby="heading{{ senator.name }}"
                  data-parent="#accordion1">
-              <div class="card-body">
-                  <strong><p>Next Election in {{ senator.get_election_year() }}</p></strong>
-                  <strong><p>Contact Info</p></strong>
-                  <li><i class="fa fa-phone"></i>: {{ senator.phone }}</li>
-                  {% if senator.facebook %}
-                  <li><i class="fa fa-facebook"></i>: <a href="https://www.facebook.com/{{ senator.facebook }}"><em>{{ senator.facebook }}</em></a></li>
-                  {% endif %}
+                <div class="card-body d-flex">
+                    <div class="mr-auto card-column">
+                        <strong><p>Next Election in {{ senator.get_election_year() }}</p></strong>
+                        <strong><p>Contact Info</p></strong>
+                        <li><i class="fa fa-phone"></i>: {{ senator.phone }}</li>
+                        {% if senator.facebook %}
+                        <li><i class="fa fa-facebook"></i>: <a href="https://www.facebook.com/{{ senator.facebook }}"><em>{{
+                            senator.facebook }}</em></a></li>
+                        {% endif %}
 
-                  {% if senator.twitter %}
-                  <li><i class="fa fa-twitter"></i>: <a href="https://twitter.com/{{ senator.twitter }}"><em>{{ senator.twitter }}</em></a></li>
-                  {% endif %}
+                        {% if senator.twitter %}
+                        <li><i class="fa fa-twitter"></i>: <a href="https://twitter.com/{{ senator.twitter }}"><em>{{
+                            senator.twitter }}</em></a></li>
+                        {% endif %}
 
-                  {% if senator.youtube %}
-                  <li><i class="fa fa-youtube"></i>: <a href="https://www.youtube.com/user/{{ senator.youtube }}"><em>{{ senator.youtube }}</em></a></li>
-                  {% endif %}
-              </div>
+                        {% if senator.youtube %}
+                        <li><i class="fa fa-youtube"></i>: <a href="https://www.youtube.com/user/{{ senator.youtube }}"><em>{{
+                            senator.youtube }}</em></a></li>
+                        {% endif %}
+                    </div>
+                    <div class="card-column">
+                        <canvas id="graph{{ senator.votes_with_party_pct}}"></canvas>
+                    </div>
+                </div>
             </div>
           </div>
         </div>
@@ -76,23 +84,28 @@
              class="collapse"
              aria-labelledby="heading{{ rep.name }}"
              data-parent="#accordion2">
-          <div class="card-body">
-              <strong><p>Next Election in {{ rep.get_election_year() }}</p></strong>
-              <strong><p>Contact Info</p></strong>
-              <ul>
-                  <li><i class="fa fa-phone"></i>:{{ rep.phone }}</li>
-                  {% if rep.facebook %}
-                  <li><i class="fa fa-facebook"></i>: <a href="https://www.facebook.com/{{ rep.facebook }}"><em>{{ rep.facebook }}</em></a></li>
-                  {% endif %}
+            <div class="card-body d-flex">
+                <div class="mr-auto card-column">
+                  <strong><p>Next Election in {{ rep.get_election_year() }}</p></strong>
+                  <strong><p>Contact Info</p></strong>
+                  <ul>
+                      <li><i class="fa fa-phone"></i>:{{ rep.phone }}</li>
+                      {% if rep.facebook %}
+                      <li><i class="fa fa-facebook"></i>: <a href="https://www.facebook.com/{{ rep.facebook }}"><em>{{ rep.facebook }}</em></a></li>
+                      {% endif %}
 
-                  {% if rep.twitter %}
-                  <li><i class="fa fa-twitter"></i>: <a href="https://twitter.com/{{ rep.twitter }}"><em>{{ rep.twitter }}</em></a></li>
-                  {% endif %}
+                      {% if rep.twitter %}
+                      <li><i class="fa fa-twitter"></i>: <a href="https://twitter.com/{{ rep.twitter }}"><em>{{ rep.twitter }}</em></a></li>
+                      {% endif %}
 
-                  {% if rep.youtube %}
-                  <li><i class="fa fa-youtube"></i>: <a href="https://www.youtube.com/user/{{ rep.youtube }}"><em>{{ rep.youtube }}</em></a></li>
-                  {% endif %}
-              </ul>
+                      {% if rep.youtube %}
+                      <li><i class="fa fa-youtube"></i>: <a href="https://www.youtube.com/user/{{ rep.youtube }}"><em>{{ rep.youtube }}</em></a></li>
+                      {% endif %}
+                  </ul>
+                </div>
+                <div class="card-column">
+                    <canvas id="graph{{ rep.votes_with_party_pct}}"></canvas>
+                </div>
           </div>
         </div>
       </div>
@@ -149,6 +162,43 @@ $('.typeahead').bind('typeahead:select', function(ev, suggestion) {
 
     document.getElementById("heading" + suggestion).scrollIntoView();
 });
+
+
+var votePercentages = {{ vote_percents | safe }};
+
+var donutOptions = {
+  cutoutPercentage: 0,
+  legend: {position:'bottom',
+       labels:{pointStyle:'circle',
+       usePointStyle:true}
+  }
+};
+
+for (pct of votePercentages) {
+
+    var currentId = "graph" + pct;
+    var ctx = document.getElementById(currentId);
+    var chDonutData1 = {
+        labels: ['Votes With Party', 'Votes Against Party'],
+        datasets: [
+          {
+            backgroundColor: ["#0157ae", "#d42729"],
+            borderWidth: 0,
+            data: [pct, (100 - pct)]
+          }
+        ]
+    };
+
+    var chDonut1 = document.getElementById(currentId);
+    if (chDonut1) {
+      new Chart(chDonut1, {
+          type: 'pie',
+          data: chDonutData1,
+          options: donutOptions
+      });
+    }
+
+}
 
 </script>
 
