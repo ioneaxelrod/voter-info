@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<style>
+    .card-column {
+        flex: 1 1 0;
+    }
+</style>
 <br><br>
 <div class="container d-flex">
         <div class="mr-auto">
@@ -52,7 +56,7 @@
                         {% endif %}
                     </div>
                     <div class="card-column">
-                        <canvas id="graph{{ senator.votes_with_party_pct}}"></canvas>
+                        <canvas id="graph{{ senator.votes_with_party_pct }}"></canvas>
                     </div>
                 </div>
             </div>
