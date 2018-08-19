@@ -83,14 +83,6 @@ $('#the-basics').typeahead({
   source: substringMatcher(categoryNames)
 });
 
-$.fn.scrollView = function () {
-    return this.each(function () {
-        $('html, body').animate({
-            scrollTop: $(this).offset().top
-        }, 1000);
-    });
-}
-
 
 $('.typeahead').bind('typeahead:select', function(ev, suggestion) {
     console.log(suggestion);
