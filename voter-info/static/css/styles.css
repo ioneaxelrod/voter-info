@@ -175,14 +175,14 @@ span.twitter-typeahead {
     font-weight: bold;
     background-color:rgba(0,0,0,0.5);
     margin 20px;
-    padding 50px;
+    padding 50px !important;
     background-size: 105% 105%
 }
 
 .transbox h1 {
     border-radius: 10px;
     background-color:rgba(0,0,0,0.5);
-    padding 50px;
+    padding 50px !important;
     margin 20px;
     background-size: 105% 105%
 

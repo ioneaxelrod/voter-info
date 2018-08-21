@@ -87,6 +87,7 @@ $('#the-basics').typeahead({
 $('.typeahead').bind('typeahead:select', function(ev, suggestion) {
     console.log(suggestion);
     document.getElementById(suggestion).scrollIntoView();
+    scrollBy(0, -100);
 });
 
 </script>

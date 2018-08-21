@@ -155,6 +155,8 @@ $('#search-congress').typeahead({
 $('.typeahead').bind('typeahead:select', function(ev, suggestion) {
     console.log(suggestion);
     document.getElementById("heading" + suggestion).scrollIntoView();
+    scrollBy(0, -100);
+
 });
 
 
