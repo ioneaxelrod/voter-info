@@ -162,5 +162,36 @@ span.twitter-typeahead {
 }
 
 .jumbotron {
-   background-color: #DEE1EA !important;
+   background: url("/static/flag.jpg") no-repeat center center !important;
+   background-size: 100% 100% !important;
+   color: #F9FAFC !important;
+   height: 100%
+}
+
+
+
+.transbox p {
+    border-radius: 10px;
+    font-weight: bold;
+    background-color:rgba(0,0,0,0.5);
+    margin 20px;
+    padding 50px;
+    background-size: 105% 105%
+}
+
+.transbox h1 {
+    border-radius: 10px;
+    background-color:rgba(0,0,0,0.5);
+    padding 50px;
+    margin 20px;
+    background-size: 105% 105%
+
+
+}
+
+//linear-gradient(rgba(0, 6, 84, 0.15), rgba(0, 6, 84, 0.15))
+
+
+.btn .btn-secondary {
+   background-color: #000654 !important;
 }
