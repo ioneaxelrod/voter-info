@@ -2,6 +2,17 @@ body {
     color: #000654;
     font-family: 'Raleway', sans-serif !important;
     background-color: #F9FAFC;
+
+}
+
+.alert-secondary {
+    background: #DEE1EA !important;
+}
+
+.btn-secondary {
+    background: #DEE1EA !important;
+    color: #0157ae;
+    border-color: #000654;
 }
 
 .navbar-light {
@@ -38,6 +49,10 @@ label {
 
 .card-column {
     flex: 1 1 0;
+}
+
+p .text-center {
+    color: #000654;
 }
 
 span.twitter-typeahead .tt-menu,
